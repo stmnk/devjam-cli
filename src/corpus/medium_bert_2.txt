@@ -1,0 +1,13 @@
+3. Multilingual models still have language-specific structures
+
+Researchers at Charles University in Prague analyzed which parts of mBERT are language-neutral and 
+language-specific parts. They found that mBERT internally clustered languages into families, and 
+represented similar sentences differently in different languages.
+
+How Language-Neutral is Multilingual BERT?
+Multilingual BERT (mBERT) provides sentence representations for 104 languages, which are useful for many 
+multi-lingual…
+arxiv.org
+
+This helps explain why a multilingual model performs best in a few languages (usually English) rather 
+than developing a language-neutral understanding.

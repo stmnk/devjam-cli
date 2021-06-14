@@ -1,0 +1,14 @@
+1. BERT and XLM-R create word embeddings in multiple languages
+
+In November 2018, Google released their NLP library BERT (named after their technique to create pre-trained 
+word embeddings: Bidirectional Encoder Representations from Transformers) with English and Chinese models.
+Shortly after, the team included models for Multilingual BERT (mBERT), covering 104 languages from around 
+the world.
+
+In November 2019, Facebook released XLM-RoBERTa (XLM-R), with two models, one using Masked Language 
+Modeling (MLM, 100 languages), and one combining MLM and Translation Language Modeling (MLM+TLM, 15 languages).
+Their analysis shows an improvement over mBERT.
+
+In December 2019, HuggingFace released DistilmBERT. This ‘distillation’ technique uses a large model to 
+train a much smaller model with similar performance.
+This model “reaches 92% of Multilingual BERT’s performance… while being twice faster and 25% smaller.”

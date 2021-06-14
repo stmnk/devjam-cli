@@ -1,0 +1,23 @@
+PUT bert
+
+GET /_cat/indices/
+
+GET bert
+
+GET bert/_search 
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+DELETE bert/_doc/mLes_3kB0TNpkv2-Q7G5
+
+GET bert/_count
+
+GET _search
+{
+  "query": {
+    "match_all": {}
+  }
+}
