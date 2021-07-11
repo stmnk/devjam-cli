@@ -1,0 +1,371 @@
+Computer Science > Computation and Language
+[Submitted on 8 Nov 2019]
+
+How Language-Neutral is Multilingual BERT?
+Jindřich Libovický, Rudolf Rosa, Alexander Fraser
+
+Multilingual BERT (mBERT) provides sentence representations for 104 languages, which are useful 
+for many multi-lingual tasks. Previous work probed the cross-linguality of mBERT using zero-shot transfer 
+learning on morphological and syntactic tasks. We instead focus on the semantic properties of mBERT. 
+We show that mBERT representations can be split into a language-specific component and a language-neutral 
+component, and that the language-neutral component is sufficiently general in terms of modeling semantics 
+to allow high-accuracy word-alignment and sentence retrieval but is not yet good enough for the more 
+difficult task of MT quality estimation. Our work presents interesting challenges which must be solved to 
+build better language-neutral representations, particularly for tasks requiring linguistic transfer of 
+semantics.
+
+How Language-Neutral is Multilingual BERT? Jindrˇich Libovicky ́1 and Rudolf Rosa2 and Alexander Fraser1
+1Center for Information and Language Processing, LMU Munich, Germany 2Faculty of Mathematics and Physics, Charles University, Prague, Czech Republic {libovicky, fraser}@cis.lmu.de rosa@ufal.mff.cuni.cz
+Abstract
+Multilingual BERT (mBERT) provides sen- tence representations for 104 languages, which are useful for many multi-lingual tasks. Pre- vious work probed the cross-linguality of mBERT using zero-shot transfer learning on morphological and syntactic tasks. We instead focus on the semantic properties of mBERT. We show that mBERT representations can be split into a language-specific component and a language-neutral component, and that the language-neutral component is sufficiently general in terms of modeling semantics to al- low high-accuracy word-alignment and sen- tence retrieval but is not yet good enough for the more difficult task of MT quality estima- tion. Our work presents interesting challenges which must be solved to build better language- neutral representations, particularly for tasks requiring linguistic transfer of semantics.
+1 Introduction
+Multilingual BERT (mBERT; Devlin et al. 2019) is gaining popularity as a contextual representa- tion for various multilingual tasks, such as de- pendency parsing (Kondratyuk and Straka, 2019; Wang et al., 2019), cross-lingual natural lan- guage inference (XNLI) or named-entity recogni- tion (NER) (Pires et al., 2019; Wu and Dredze, 2019; Kudugunta et al., 2019).
+Pires et al. (2019) present an exploratory paper showing that mBERT can be used cross-lingually for zero-shot transfer in morphological and syn- tactic tasks, at least for typologically similar lan- guages. They also study an interesting semantic task, sentence-retrieval, with promising initial re- sults. Their work leaves many open questions in terms of how good the cross-lingual mBERT rep- resentation is for semantics, motivating our work.
+In this paper, we directly assess the seman- tic cross-lingual properties of mBERT. To avoid
+methodological issues with zero-shot transfer (possible language overfitting, hyper-parameter tuning), we selected tasks that only involve a direct comparison of the representations: cross-lingual sentence retrieval, word alignment, and machine translation quality estimation (MT QE). Addition- ally, we explore how the language is represented in the embeddings by training language identifi- cation classifiers and assessing how the represen- tation similarity corresponds to phylogenetic lan- guage families.
+Our results show that the mBERT representa- tions, even after language-agnostic fine-tuning, are not very language-neutral. However, the identity of the language can be approximated as a constant shift in the representation space. An even higher language-neutrality can still be achieved by a lin- ear projection fitted on a small amount of parallel data.
+Finally, we present attempts to strengthen the language-neutral component via fine-tuning: first, for multi-lingual syntactic and morphological analysis; second, towards language identity re- moval via a adversarial classifier.
+2 Related Work
+Since the publication of mBERT (Devlin et al., 2019), many positive experimental results were published.
+Wang et al. (2019) reached impressive results in zero-shot dependency parsing. However, the representation used for the parser was a bilingual projection of the contextual embeddings based on word-alignment trained on parallel data.
+Pires et al. (2019) recently examined the cross- lingual properties of mBERT on zero-shot NER and part-of-speech (POS) tagging but the success of zero-shot transfer strongly depends on how ty- pologically similar the languages are. Similarly,
+arXiv:1911.03310v1 [cs.CL] 8 Nov 2019
+
+Wu and Dredze (2019) trained good multilingual models for POS tagging, NER, and XNLI, but struggled to achieve good results in the zero-shot setup.
+Pires et al. (2019) assessed mBERT on cross- lingual sentence retrieval between three language pairs. They observed that if they subtract the aver- age difference between the embeddings from the target language representation, the retrieval accu- racy significantly increases. We systematically study this idea in the later sections.
+Many experiments show (Wu and Dredze, 2019; Kudugunta et al., 2019; Kondratyuk and Straka, 2019) that downstream task models can extract relevant features from the multilingual represen- tations. But these results do not directly show language-neutrality, i.e., to what extent are similar phenomena are represented similarly across lan- guages. The models can obtain the task-specific information based on the knowledge of the lan- guage, which (as we show later) can be easily identified. Our choice of evaluation tasks elimi- nates this risk by directly comparing the represen- tations. Limited success in zero-shot setups and the need for explicit bilingual projection in order to work well (Pires et al., 2019; Wu and Dredze, 2019; Ro ̈nnqvist et al., 2019) also shows limited language neutrality of mBERT.
+3 Centering mBERT Representations
+Following Pires et al. (2019), we hypothesize that a sentence representation in mBERT is composed of a language-specific component, which identi- fies the language of the sentence, and a language- neutral component, which captures the meaning of the sentence in a language-independent way. We assume that the language-specific component is similar across all sentences in the language.
+We thus try to remove the language-specific in- formation from the representations by centering the representations of sentences in each language so that their average lies at the origin of the vector space. We do this by estimating the language cen- troid as the mean of the mBERT representations for a set of sentences in that language and sub- tracting the language centroid from the contextual embeddings.
+We then analyze the semantic properties of both the original and the centered representations us- ing a range of probing tasks. For all tasks, we test all layers of the model. For tasks utilizing a
+single-vector sentence representation, we test both the vector corresponding to the [cls] token and mean-pooled states.
+4 Probing Tasks
+We employ five probing tasks to evaluate the lan- guage neutrality of the representations.
+Language Identification. With a representation that captures all phenomena in a language-neutral way, it should be difficult to determine what lan- guage the sentence is written in. Unlike other tasks, language identification does require fitting a classifier. We train a linear classifier on top of a sentence representation to try to classify the lan- guage of the sentence.
+Language Similarity. Experiments with POS tagging (Pires et al., 2019) suggest that similar lan- guages tend to get similar representations on av- erage. We quantify that observation by measur- ing how languages tend to cluster by the language families using V-measure over hierarchical clus- tering of the language centeroid (Rosenberg and Hirschberg, 2007).
+Parallel Sentence Retrieval.
+For each sentence in a multi-parallel corpus, we compute the cosine distance of its representation with representations of all sentences on the parallel side of the corpus and select the sentence with the smallest distance. Besides the plain and centered [cls] and mean- pooled representations, we evaluate explicit pro- jection into the “English space”. For each lan- guage, we fit a linear regression projecting the rep- resentations into English representation space us-
+ing a small set of parallel sentences.
+Word Alignment. While sentence retrieval could be done with keyword spotting, comput- ing bilingual alignment requires resolving detailed correspondence on the word level.
+We find the word alignment as a minimum weighted edge cover of a bipartite graph. The graph connects the tokens of the sentences in the two languages and edges between them are weighted with the cosine distance of the token representation. Tokens that get split into multi- ple subwords are represented using the average of the embeddings of the subwords. Note that this algorithm is invariant to representation centering which would only change the edge weights by a constant offset.
+
+      We evaluate the alignment using the F1 score
+over bothWseureevaalunadteptohsesiablliegnamliegnntmuseintgltihneksF1inscaore
+over both sure and possible alignment links in a manually aligned gold standard.
+[cls] [cls]
+mBERT UDify lng-free
+mBERT UDify lng-free .935 .938 .796
+.935 .938 .796 .867 .851 .337
+ manually aligned gold standard.
+MT Quality Estimation. MT QE assesses the
+[cls], cent. [cls], cent.
+.867 .851 .337 .919 .896 .230
+ MT Quality Estimation. MT QE assesses the quality of an MT system output without having ac-
+mean-pool
+quality of an MT system output without having ac- cess to a reference translation.
+mean-pool mean-pool, cent.
+.919 .896 .230 .285 .243 .247
+ cess to a reference translation.
+mean-pool, cent.
+.285 .243 .247
+The standard evaluation metric is the correla- The standard evaluation metric is the correla-
+tion with the Human-targeted Translation Error tion with the Human-targeted Translation Error
+Rate which is the number of edit operations a hu- Rate which is the number of edit operations a hu-
+man translator would need to do to correct the sys- man translator would need to do to correct the sys-
+tem outepmut.ouTtphuits. iTshaismisoraemcohraellcehnagllienngitnagsktatshkatnhan the twothpertewvoiopursevoinoeus obneecsaubseecaiutsreeiqturierqeusirceaspctuapr-tur-
+ing more fine-grained differences in meaning. ing more fine-grained differences in meaning.
+Table 1: Accuracy of language identification, values Table 1: Accuracy of language identification, values
+from the best-scoring layers. from the best-scoring layers.
+ Volapu ̈k HMaiatilangasy
+PiLedomobnatredse
+   MinaBngiskhanbuapuriya Manipuri Newar
+  WaCraeybu-Wanaoray Chechen
+ South Azerbaijani Telugu
+ Tatar BasqUuzebek
+Chuvash Bashkir
+Tajik Kazakh
+ Turkic
+Kirghiz
+ Yoruba
+Sundanese Ido Serbo-Croatian
+ TagJaalvoagMneaslaey IndoVniestinaanmese
+Serbian
+  Slovak LiLthautvaniainan
+Bosnian Malayalam
+   Swahili Gujarati
+Latin
+Armenian Kannada Polish GeorgSia.nDravidian
+  Slavic
+Tamil BengPaluinjabi
+Croatian
+AlbanSilaonveCnizaench
+ Belarusian Romanian Greek
+  Romance Ukrainian
+Indic Burmese MHainradtihi
+  Catalan
+Russian Macedonian
+Nepali
+ Aragonese Portuguese
+Bulgarian
+   SiciliOanccitan
+HungariAanTzeurbkaisijhani
+  GaliciIatanlian Asturian
+Spanish French
+Western Punjabi Urdu
+Persian (Farsi)
+  Celtic
+Norwegian (Bokmal) GNAeofrimwkaeagniasinc(Nynorsk)
+Irish
+West Frisian ChKinoeresaen Luxembourgish
+ScoEtsnglishGerman EFsitnoniisahn
+ WBerlesthon
+DutchSwedish Danish
+Arabic SHebmreiwtic
+      Low Saxon Icelandic Japanese Bavarian
+   We evaluate how cosine distance of the repre- We evaluate how cosine distance of the repre-
+sentation of the source sentence and of the MT sentation of the source sentence and of the MT
+output reflects the translation quality. In addition output reflects the translation quality. In addition
+to plain and centered representations, we also test to plain and centered representations, we also test
+trained bilingual projection, and a fully supervised
+trained bilingual projection, and a fully supervised regression trained on training data.
+regression trained on training data.
+5 Experimental Setup
+5 Experimental Setup
+We use a pre-trained mBERT model that was made
+We usepaupblriec-wtraitihntehdemBBERETRTrelmeaosdee.lTthaetmwoadseml daidmeen- sion is 768, hidden layer dimension 3072, self-
+public with the BERT release1. The model dimen- attention uses 12 heads, the model has 12 layers.
+sion is 768, hidden layer dimension 3072, self-
+It uses a vocabulary of 120k wordpieces that is attention uses 12 heads, the model has 12 layers.
+shared for all languages.
+It uses a vocabulary of 120k wordpieces that is
+To train the language identification classifier, shared for all languages.
+Figure 1: Language centroids of the mean-pooled rep- Figure 1: Language centroids of the mean-pooled rep-
+for each of the BERT languages we randomly se-
+resentations from the 8th layer of cased mBERT on a resentations from the 8th layer of cased mBERT on a
+To train the language identification classifier, lected 110k sentences of at least 20 characters
+for each of the BERT languages we randomly se- from Wikipedia, and keep 5k for validation and 5k
+lected 110k sentences of at least 20 characters for testing for each language. The training data are
+from Wailksoipuesdeida,foarnedstkiemeapti5ngk tfhoer lvaanlgiudagtieocneanntrdoi5dks.
+fortestingFoforrpeaaraclhlelasnegnuteangce.rTethreietvrali,nwinegudseataamruelti-
+parallel corpus of test data from the WMT14 eval- alsousedforestimatingthelanguagecentroids.
+uation campaign (Bojar et al., 2014) with 3,000 For parallel sentence retrieval, we use a multi-
+tSNE plot with highlighted language families. tSNE plot with highlighted language families.
+sentences in Czech, English, French, German, parallel corpus of test data from the WMT14 eval-
+vided for the WMT19 QE Shared Task (Fonseca videetdal.f,o2r0t1h9e)cWonMsiTst1in9gQtraEinSinhgaraendTteasstkda(tFaownistehca etsaolu.,rc2e01se9n)teccoenss,itshteinirgaturtaoimniantgicatnradnstleasttiodnast,aawndith
+Hindi, and Russian. The linear projection exper- uation campaign (Bojar et al., 2014) with 3,000
+manually corrections.
+source senteces, their automatic translations, and
+iment uses the WMT14 development data. sentences in Czech, English, French, German,
+manually corrections.
+We use manually annotated word alignment
+6 Results 6 Results
+Hindi, and Russian. The linear projection exper- datasets to evaluate word alignment between En-
+Language Identification. Table 1 shows that centering the sentence representations consider-
+iment uses the WMT14 development data.
+glish on one side and Czech (2.5k sent.; Marecˇek,
+We use manually annotated word alignment 2016), Swedish (192 sent.; Holmqvist and Ahren-
+Language Identification. Table 1 shows that ably decreases the accuracy of language identifi-
+centering the sentence representations consider- cation,especiallyinthecaseofmean-pooledem-
+1
+datasetbsetrog,ev2a0l1u1a)t,eGweormrdanali(g5n0m8esnetntb.)e,twFerenchEn(4-47 glishonseonnt.e;sOidcheandCNzeeyc,h20(200.5)kasnedntR.;oMmanrieacˇnek(2,48 beddings.Thisindicatesthattheproposedcenter-
+et al., 2019) in addition to the test data. et al., 2019) in addition to the test data.
+ably decreases the accuracy of language identifi- sent.;MihalceaandPedersen,2003)ontheothercatiniognp,reoscpeedcuiraelldyoeinstinhdeeceadsreemofomveetahne-plaonoglueadge-m-
+2016), Swedish (192 sent.; Holmqvist and Ahren-
+side. WecomparetheresultswithFastAlignbesdpdeicnigfisc.inTfhoirsmiantdioincattoeasgthreaatttehxetepnrto.posedcenter-
+berg, 2011), German (508 sent.), French (447 (Dyer et al., 2013) that was provided with 1M ad-
+ing procedure does indeed remove the language- Language Similarity. Figure 1 is a tSNE plot
+specificinformationtoagreatextent.
+(Maaten and Hinton, 2008) of the language cen-
+troids, showing that the similarity of the centroids Language Similarity. Figure 1 is a tSNE plot
+(Maaten and Hinton, 2008) of the language cen- troids, showing that the similarity of the centroids tends to correspond to the similarity of the lan-
+sent.; Och and Ney, 2000) and Romanian (248 ditionalparallelsentencesfromParaCrawl(Espla`
+sent.; Mihalcea and Pedersen, 2003) on the other 1
+side. Whettpsc:o//gmithpuabr.ceomth/geoorgeles-urelstesarcwh/ibthert FastAlign (Dyer et al., 2013) that was provided with 1M ad- ditional parallel sentences from ParaCrawl (Espla`
+For MT QE, we use English-German data pro- For MT QE, we use English-German data pro-
+ 1 https://github.com/google-research/bert
+
+            cased uncased UDify lng-free random cased uncased UDify lng-free random
+82.42 82.09 80.03 80.59 62.14 82.42 82.09 80.03 80.59 62.14
+Table 2: V-Measure for hierarchical clustering of lan- Table 2: V-Measure for hierarchical clustering of lan-
+  100 75 50 25 0
+1 2 3 4 5 6 7 8 9 10 11 12
+Layer
+       plain centered projected
+       guage centroids and grouping languages into genealog- guage centroids and grouping languages into genealog-
+ical families for families with at least three languages ical families for families with at least three languages
+covered by mBERT. covered by mBERT.
+mBERT UDify lng-free mBERT UDify lng-free
+  [cls] [cls]
+.639 .462 .549 .639 .462 .549
+Fiigguurree22:: Acccuurraaccyyooffsseenntteenncceerreettrriieevvaallffoorrmeeaann-- ppooolleeddccoonntteexxttuuaalleembbeedddiinnggssffrroomBERTlalayyeerrss..
+een-- FaasstAtAlilgignn mBERT UDiiffyy llnngg--ffrreee
+[cls], cent. [cls], cent.
+.684 .660 .686 .684 .660 .686
+[cls], proj. [cls], proj.
+.915 .933 .697 .915 .933 .697
+ mean-pool mean-pool
+.776 .314 .755 .776 .314 .755
+ccss ..692 ssv ..438 dee ..471 ffrr ..583 rro ..690
+..738 ..478 ..767 ..612 ..703
+.7.70088 .4.45599 .7.73311 .5.58811 .6.69966
+.7.7444 .4.46688 .7.76688 .6.60077 .7.70044
+  mean-pool, cent. mean-pool, cent.
+.838 .564 .828 .838 .564 .828
+mean-pool, proj. mean-pool, proj.
+.983 .906 .983 .983 .906 .983
+ Table 3: Average accuracy for sentence retrieval over Table 3: Average accuracy for sentence retrieval over
+all 30 language pairs. all 30 language pairs.
+ tends to correspond to the similarity of the lan- guages. Table 2 confirms that the hierarchical
+11
+guages. Table 2 confirms that the hierarchical clustering of the language centroids mostly corre-
+clustering of the language centroids mostly corre- sponds to the language families.
+sponds to the language families. ParallelSentenceRetrieval. ResultsinTable3
+Parallel Sentence Retrieval. Results in Table 3 reveal that the representation centering dramat-
+reveal that the representation centering dramat- ically improves the retrieval accuracy, showing
+ically improves the retrieval accuracy, showing thatitmakestherepresentationsmorelanguage-
+3
+that it makes the representations more language- neutral. However, an explicitly learned projection
+neutral. However, an explicitly learned projection oftherepresentationsleadstoamuchgreaterim-
+of the representations leads to a much greater im- provement, reaching a close-to-perfect accuracy,
+provement, reaching a close-to-perfect accuracy, even though the projection was fitted on relatively
+even though the projection was fitted on relatively small parallel data. The accuracy is higher for
+small parallel data. The accuracy is higher for mean-pooledstatesthanforthe[cls]embedding
+mean-pooled states than for the [cls] embedding and varies according to the layer of mBERT used
+and varies according to the layer of mBERT used (see Figure 2).
+(see Figure 2).
+Word Alignment. Table 4 shows that word-
+Word Alignment. Table 4 shows that word- alignment based on mBERT representations sur-
+alignmentbasedonmBERTrepresentationssur- passes the outputs of the standard FastAlign tool
+passes the outputs of the standard FastAlign tool even if it was provided large parallel corpus. This
+even if it was provided large parallel corpus. This suggests that word-level semantics are well cap-
+suggests that word-level semantics are well cap- tured by mBERT contextual embeddings. For this
+tured by mBERT contextual embeddings. For this task, learning an explicit projection had a negligi-
+7.1 UDify 7.1 UDify
+task, learning an explicit proj2ection had a negligi- ble effect on the performance. 2
+ble effect on the performance.
+MT Quality Estimation. Qualitative results of
+The UDify model (Kondratyuk and Straka, 2019) The UDify model (Kondratyuk and Straka, 2019)
+MT Quality Estimation. Qualitative results of MT QE are tabulated in Table 5. Unlike sentence
+uses mBERT to train a single model for depen-
+MT QE are tabulated in Table 5. Unlike sentence retrieval, QE is more sensitive to subtle differences
+uses mBERT to train a single model for depen- dency parsing and morphological analysis of 75
+Taabbllee44::MaaxxiimuumF ssccoorreeffoorrwoorrddaalliiggnnmeennttaaccrroosss
+llaayyeerrssccoomppaarreeddwiitthhFaassttAlliiggnnbbaasseelliinnee..
+bretwrieveanl,sQenEteinscmeso.reMseansuitriivnegtothseudbitsletadnicffeeorefntches nboentw-ceenntesrendtesnecnetesn.cMeevaescutroirnsgdtohesdnisotatnccoerroeflatthee
+wniotnh-tcreantselraetidonseqnutaelnictyeavteacllt.orCsednotersinngootrceoxrprelilcaitte pwroitjhectrtiaonnsloantiloynlqeuadalsittyoaatamlli.ldCecnotrerreilnagtionr,exmpulichit
+lporwoejerctthioanaonsluypleeravdisetdolyatmrailndedcorrergerleastisoionn,;mauncdh
+3 elvoewnebretthtearnpaersfuoprmeravniscedilsyptorasisnibelde r(eFgornesescioane;t aln.,d
+2e0v1e9n)b.eTttheerpresrufoltrsmsahnocweitshpatosthsieblien(eFaornpsreocjaecetioaln., b2e0tw19e)e.nTthe repsureltsenshtaotwionthsaotntlhyeclainpetuarepsraojreocutigohn sbeemtwaneteinc cthoerrresproensednetnacteio,nwshoicnhlydcoaepstunroetssaeermoutgoh bsemsuafnfitciicecnotrfroersQpoEn,dwehnecree, twhheimchosdtoiensdincoattisveemfeat-o tbueresuapffipceiaernsttforbQesEe,nwtehnecrecthoemmploesxtiitnyd.icativefea-
+ture appears to be sentence complexity.
+7 Fine-tuning mBERT 7 Fine-tuning mBERT
+We also considered model fine-tuning towards sWtroengaelsrolacnognusaidgerendeumtroaldietyl. finWe-etuenvinalguattoewtawrdos fisntreo-ntugneerdlavnegrsuiaognesonfeumtrBalEitRyT.:WUDeifeyv,atlunateedtfworo
+afinmeu-tlutin-leidngvuearlsidoenpseonfdemnBcyERpTar:seUr,Daifnyd, tlunnge-fdrefeo,r taunmedulttoi-jleinttgisuoanl tdhepleandgeunacgye-psparesceirfi,caindfolrnmga-tfiroene, ftruonmedthtoe rjetptriseosenntthaetiloansg.uage-specific information
+from the representations.
+ 2
+2 We used an expectation-maximization approach that al-
+33Supervised regression using either only the source or Supervised regression using either only the source or
+ We used an expectation-maximization approach that al- ternately aligned the words and learned a linear projection
+only MT output also shows a respectable correlation, which only MT output also shows a respectable correlation, which
+ternately aligned the words and learned a linear projection between the representations. This algorithm only brings a
+implies that structural features of the sentences are more use- implies that structural features of the sentences are more use-
+between the representations. This algorithm only brings a
+ful than the comparison of the source sentence with MT out- ful than the comparison of the source sentence with MT out-
+negligible improvement of .005 F1 points. negligible improvement of .005 F1 points.
+put. put.
+Retrieval accuracy %
+
+     BERT BERT
+cased cased
+cente- glob. cente- glob.
+red proj. red proj.
+.005 .163 .005 .163
+supervised supervised
+src MT both src MT both
+decreasing the accuracy of the language identifica- tion classifier; the effect is strongest in deeper lay-
+tion classifier; the effect is strongest in deeper lay- ers for which the standard mBERT tend to perform
+ers for which the standard mBERT tend to perform better (see Figure 3). However, other tasksare not
+better (see Figure 3). However, other tasksare not affected by the adversarial fine-tuning.
+affected by the adversarial fine-tuning.
+8 Conclusions 8 Conclusions
+Using a set of semantically oriented tasks that re- qUusiriengeaxpsleitciotfsemanttiicacllryososr-ileingteudaltarsekpsrethseanttrae- tqiounirse,wexepslhicoiwtesdemthaanttimcBcEroRsTs-lcionngtueaxlturaelpreemsebnetda- dtinogns,dwoensohtorweepdretsheanttmsiBmEilRaTr sceomnatenxttiucaplheemnboemd- edniangssimdoilanrolyt raenpdretsheenrtefsoimreiltahresyemaraenntioctpdhiernecotmly- uesnaablseimfoirlazrelyroa-snhdothceroresfso-lriengthueayl tarseksn.ot directly usCabolnetefoxrtuzaelreom-sbheodtdcirnogss-olifnmguBaElRtaTskcsa.pturesim- ilarCitioenstebxetutwaleemnbleadndgiunagseosfamnBdEcRluTstcearptuhreslaimn- giulargiteisesbbyetwheiernfalamnigliueasg.esNaenitdhecrlucsrtoesrs-thliengluaanl- fignuea-gtuesninbgy nthoeriradfavmerislaierisa.l lNanegituhaegrecirdoesns-tliitnygruea-l mfionve-atlunbirnegaknsotrhiasdvperorspaerritayl. laAngpuargteoifdelanntigtuyarge- imnfovrmalabtiroenakisethnicsodperodpbeyrtyth.eApospiatriotnofinlathnegueamg-e biendfodrimngatisopnacise,enthcoudsead bcyerthaeinpodseigtiroene ionfthceroesms- lbinegdudainligty scpaanceb,e tahcuhsievaedcebrtyaicnendtergirnege thoef rcerporses- sleingtautaiolintys fcoarnebacehalcahnigevueadgeb.yEcxepnloteirting thies rperporpe- esretyntaltliownsfaorgeoaocdhclraonsgsu-laigneg.uEalxspelonitteincgethreistrpiervoapl- peerrtfyoarmlloawncseaagnodobdilcirnogsusa-liwngouradlasleignntemnceentre(wtriheivcahl ipseirnfvoarrmiaanntcteoatnhde sbhiliifnt)g.uAalgwoordcarloigssn-mlinengtu(awl rheipch- riessienvtartioantctaonthbe sahcihfti)e.vAedgboyofidtctirnogssa-lsinugpueravlirsepd- prreosjencttaitoinononcaansbmealclhpiaervaeldleblycofirtptuinsg.asupervised
+projection on a small parallel corpus.
+  uncased .027 .204 .367 .390 .425 uncased .027 .204 .367 .390 .425
+UDify .039 .167 .368 .375 .413 UDify .039 .167 .368 .375 .413
+lng-free .026 .136 .349 .343 .411 lng-free .026 .136 .349 .343 .411
+Table 5: Correlation of estimated MT quality with Table 5: Correlation of estimated MT quality with
+HTER for English-to-German translation on WMT19 HTER for English-to-German translation on WMT19
+data. data.
+In this experiment, we try to make the representa-
+Barry Haddow, Philipp Koehn, Johannes Leveling, Ondrej Bojar, Christian Buck, Christian Federmann,
+Christof Monz, Pavel Pecina, Matt Post, Herve Barry Haddow, Philipp Koehn, Johannes Leveling,
+Saint-Amand, Radu Soricut, Lucia Specia, and Alesˇ Christof Monz, Pavel Pecina, Matt Post, Herve
+Tamchyna. 2014. Findings of the 2014 workshop on Saint-Amand, Radu Soricut, Lucia Specia, and Alesˇ
+statistical machine translation. In Proceedings of the Tamchyna. 2014. Findings of the 2014 workshop on
+Ninth Workshop on Statistical Machine Translation, statistical machine translation. In Proceedings of the
+pages 12–58, Baltimore, Maryland, USA. Associa- Ninth Workshop on Statistical Machine Translation,
+tion for Computational Linguistics.
+pages 12–58, Baltimore, Maryland, USA. Associa-
+tion for Computational Linguistics.
+Jacob Devlin, Ming-Wei Chang, Kenton Lee, and
+In this experiment, we try to make the representa- tions more language-neutral by removing the lan-
+Kristina Toutanova. 2019. BERT: Pre-training of Jacob Devlin, Ming-Wei Chang, Kenton Lee, and deep bidirectional transformers for language under- Kristina Toutanova. 2019. BERT: Pre-training of
+tions more language-neutral by removing the lan- guage identity from the model using an adversar-
+guage identity from the model using an adversar- ial approach. We continue training mBERT in a
+standing. In Proceedings of the 2019 Conference deep bidirectional transformers for language under- of the North American Chapter of the Association standing. In Proceedings of the 2019 Conference
+ial approach. We continue training mBERT in a multi-task learning setup with the masked LM ob-
+multi-task learning setup with the masked LM ob- jective with the same sampling procedure (Devlin
+for Computational Linguistics: Human Language of the North American Chapter of the Association Technologies, Volume 1 (Long and Short Papers), for Computational Linguistics: Human Language
+jective with the same sampling procedure (Devlin et al., 2019) jointly with adversarial language ID
+pages 4171–4186, Minneapolis, Minnesota. Associ- Technologies, Volume 1 (Long and Short Papers),
+et al., 2019) jointly with adversarial language ID classifiers (Elazar and Goldberg, 2018). For each
+ation for Computational Linguistics.
+pages 4171–4186, Minneapolis, Minnesota. Associ-
+classifiers (Elazar and Goldberg, 2018). For each layer, we train one classifier for the [cls] token
+ation for Computational Linguistics.
+Chris Dyer, Victor Chahuneau, and Noah A. Smith.
+layer, we train one classifier for the [cls] token and one for the mean-pooled hidden states with
+2013. A simple, fast, and effective reparameter- Chris Dyer, Victor Chahuneau, and Noah A. Smith. ization of IBM model 2. In Proceedings of the 2013. A simple, fast, and effective reparameter-
+and one for the mean-pooled hidden states with the gradient reversal layer (Ganin and Lempitsky,
+the gradient reversal layer (Ganin and Lempitsky, 2015) between mBERT and the classifier.
+2013 Conference of the North American Chapter of ization of IBM model 2. In Proceedings of the the Association for Computational Linguistics: Hu- 2013 Conference of the North American Chapter of
+2015) between mBERT and the classifier.
+The results reveal that the adversarial removal
+man Language Technologies, pages 644–648, At- the Association for Computational Linguistics: Hu- lanta, Georgia. Association for Computational Lin- man Language Technologies, pages 644–648, At-
+The results reveal that the adversarial removal of language information succeeds in dramatically
+of language information succeeds in dramatically decreasing the accuracy of the language identifica-
+guistics.
+.362 .352 .362 .352
+.419 .419
+  100 75 50 25 0
+1 2 3 4 5 6 7 8 9 10 11 12
+Layer
+      cased UDify lng-free English
+        FFigiguurere33::LLaanngguuaaggeeIIDaacccuurraaccyyffoorrddififfeerreennttllaayyeerrssooff m mBBEERRTT. .
+ladnegnucyagpeas.rsinDguraindgmthoerphaorsloegrictralinainagl,ysmisBoEfR7T5 islafinngeu-atguense.d,Dwuhriicnhgimthperopvaersethretrpaainrsienrg,acmcuBrEacRyT. Risesfiunltes-tounezde,row-hshicohtpimarpsrionvgesutghgeepsatrtsheartathcceufirancey-. tuRneisnugltlseoadnszteorom-sohroetcpraorssi-nlginsgugaglersetptrheasetnthtaetifiones- wtuitnhinregslpeeacdtstotomoorprehocrlogssy-laindgusaylnrteapxr.esentations
+with respect to morphology and syntax. However, our analyses show that fine-tuning
+mBHEoRwTefvoerr,mouultrilianngaulaylsdesepsehnodwencthyaptafirsnien-gtudnoiensg nmotBrEemRTovfeorthmeulaltnigliunagguealidenpteitnydienfcoyrmpartsioingfrdomes thneotrreepmreosveentahteiolannsgaunadgeacidtueanltliytyminafkoerms tahtieonrefprroem-
+the representations and actually makes the repre- sentations less semantically cross-lingual.
+sentations less semantically cross-lingual.
+7.2 lng-free 7.2 lng-free
+References References
+Ondrej Bojar, Christian Buck, Christian Federmann,
+Accuracy %
+
+Yanai Elazar and Yoav Goldberg. 2018. Adversarial removal of demographic attributes from text data. In Proceedings of the 2018 Conference on Empiri- cal Methods in Natural Language Processing, pages 11–21, Brussels, Belgium. Association for Compu- tational Linguistics.
+Miquel Espla`, Mikel Forcada, Gema Ram ́ırez-Sa ́nchez, and Hieu Hoang. 2019. ParaCrawl: Web-scale par- allel corpora for the languages of the EU. In Pro- ceedings of Machine Translation Summit XVII Vol- ume 2: Translator, Project and User Tracks, pages 118–119, Dublin, Ireland. European Association for Machine Translation.
+Erick Fonseca, Lisa Yankovskaya, Andre ́ F. T. Martins, Mark Fishel, and Christian Federmann. 2019. Find- ings of the WMT 2019 shared tasks on quality es- timation. In Proceedings of the Fourth Conference on Machine Translation (Volume 3: Shared Task Pa- pers, Day 2), pages 1–10, Florence, Italy. Associa- tion for Computational Linguistics.
+Yaroslav Ganin and Victor Lempitsky. 2015. Unsu- pervised domain adaptation by backpropagation. In Proceedings of the 32nd International Conference on Machine Learning, volume 37 of Proceedings of Machine Learning Research, pages 1180–1189, Lille, France. PMLR.
+Maria Holmqvist and Lars Ahrenberg. 2011. A gold standard for English-Swedish word alignment. In Proceedings of the 18th Nordic Conference of Com- putational Linguistics (NODALIDA 2011), pages 106–113, Riga, Latvia. Northern European Associa- tion for Language Technology (NEALT).
+sociation for Computational Linguistics.
+Sneha Kudugunta, Ankur Bapna, Isaac Caswell, and Orhan Firat. 2019. Investigating multilingual NMT representations at scale. In Proceedings of the 2019 Conference on Empirical Methods in Natu- ral Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP), pages 1565–1575, Hong Kong, China. Association for Computational Linguistics.
+Laurens van der Maaten and Geoffrey Hinton. 2008. Visualizing data using t-sne. Journal of machine learning research, 9(Nov):2579–2605.
+DavidMarecˇek.2016. Czech-englishmanualword alignment. LINDAT/CLARIN digital library at the InstituteofFormalandAppliedLinguistics(U ́FAL), Faculty of Mathematics and Physics, Charles Uni- versity.
+Rada Mihalcea and Ted Pedersen. 2003. An evalua- tion exercise for word alignment. In Proceedings of the HLT-NAACL 2003 Workshop on Building and Using Parallel Texts: Data Driven Machine Trans- lation and Beyond, pages 1–10.
+Franz Josef Och and Hermann Ney. 2000. Improved statistical alignment models. In Proceedings of the 38th Annual Meeting of the Association for Com- putational Linguistics, pages 440–447, Hong Kong. Association for Computational Linguistics.
+Telmo Pires, Eva Schlinger, and Dan Garrette. 2019. How multilingual is multilingual BERT? In Pro- ceedings of the 57th Annual Meeting of the Asso- ciation for Computational Linguistics, pages 4996– 5001, Florence, Italy. Association for Computa- tional Linguistics.
+Samuel Ro ̈nnqvist, Jenna Kanerva, Tapio Salakoski, and Filip Ginter. 2019. Is multilingual BERT flu- ent in language generation? In Proceedings of the First NLPL Workshop on Deep Learning for Natural Language Processing, pages 29–36, Turku, Finland. Linko ̈ping University Electronic Press.
+Andrew Rosenberg and Julia Hirschberg. 2007. V- measure: A conditional entropy-based external clus- ter evaluation measure. In Proceedings of the 2007 Joint Conference on Empirical Methods in Natural Language Processing and Computational Natural Language Learning (EMNLP-CoNLL), pages 410– 420, Prague, Czech Republic. Association for Com- putational Linguistics.
+Yuxuan Wang, Wanxiang Che, Jiang Guo, Yijia Liu, and Ting Liu. 2019. Cross-lingual BERT trans- formation for zero-shot dependency parsing. In Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Lan- guage Processing (EMNLP-IJCNLP), pages 5725– 5731, Hong Kong, China. Association for Computa- tional Linguistics.
+Shijie Wu and Mark Dredze. 2019. Beto, bentz, be- cas: The surprising cross-lingual effectiveness of BERT. In Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natu- ral Language Processing (EMNLP-IJCNLP), pages 833–844, Hong Kong, China. Association for Com- putational Linguistics.
+75 lan- guages, 1 model: Parsing universal dependencies universally. In Proceedings of the 2019 Confer- ence on Empirical Methods in Natural Language Processing and the 9th International Joint Confer- ence on Natural Language Processing (EMNLP- IJCNLP), pages 2779–2795, Hong Kong, China. As-
+Dan Kondratyuk and Milan Straka. 2019.

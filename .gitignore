@@ -3,3 +3,4 @@ venv
 src/.DS_Store
 .DS_Store
 src/images
+src/__pycache__

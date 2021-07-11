@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv   
 from elasticsearch import Elasticsearch
 
+
 load_dotenv()                    
 BONSAI_URL = os.environ.get('BONSAI_URL')
 client = Elasticsearch(BONSAI_URL)

@@ -1,5 +1,8 @@
 numpy
 sklearn
 requests
+tensorflow
 elasticsearch
 python-dotenv
+tensorflow_hub
+elasticsearch-oss

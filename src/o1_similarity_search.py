@@ -4,6 +4,7 @@ import requests
 import numpy as np  
 from sklearn.feature_extraction.text import TfidfVectorizer
 
+
 def corpus_docs(corpus):
     for directory, _, filenames in os.walk(corpus):
         for filename in filenames:

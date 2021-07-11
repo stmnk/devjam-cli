@@ -1,0 +1,60 @@
+A whole world of BERT
+Multilingual BERT, or language-specific implementations?
+Nick Doiron
+Jan 30, 2020·4 min read
+
+1. BERT and XLM-R create word embeddings in multiple languages
+In November 2018, Google released their NLP library BERT (named after their technique to create pre-trained word embeddings: Bidirectional Encoder Representations from Transformers) with English and Chinese models.
+Shortly after, the team included models for Multilingual BERT (mBERT), covering 104 languages from around the world.
+In November 2019, Facebook released XLM-RoBERTa (XLM-R), with two models, one using Masked Language Modeling (MLM, 100 languages), and one combining MLM and Translation Language Modeling (MLM+TLM, 15 languages).
+Their analysis shows an improvement over mBERT.
+In December 2019, HuggingFace released DistilmBERT. This ‘distillation’ technique uses a large model to train a much smaller model with similar performance.
+This model “reaches 92% of Multilingual BERT’s performance… while being twice faster and 25% smaller.”
+2. Multi-lingual performance is measured with XNLI
+The current standard to measure multilingual language models is the Cross-Lingual NLI Corpus (XNLI). This test set in 14 languages (15 when including English) was released by Facebook AI and NYU in September 2018:
+XNLI
+Introduction The Cross-lingual Natural Language Inference (XNLI) corpus is a crowd-sourced collection of 5,000 test and…
+www.nyu.edu
+Who has State of the Art performance on XNLI?
+Currently, both XLM-R models outperform the original mBERT across multiple languages.
+
+performance on XNLI: lg = number of languages, bolded number is best result in language column
+Interestingly, when comparing MLM training on 17 languages or 100 languages, you can see that performance on English and other languages drops. This helps explain why NLP developers will use monolingual or limited language models, instead of always using multilingual models.
+3. Multilingual models still have language-specific structures
+Researchers at Charles University in Prague analyzed which parts of mBERT are language-neutral and language-specific parts. They found that mBERT internally clustered languages into families, and represented similar sentences differently in different languages.
+How Language-Neutral is Multilingual BERT?
+Multilingual BERT (mBERT) provides sentence representations for 104 languages, which are useful for many multi-lingual…
+arxiv.org
+This helps explain why a multilingual model performs best in a few languages (usually English) rather than developing a language-neutral understanding.
+Update: other papers on cross-language relationships in multilingual models: https://www.aclweb.org/anthology/D19-6106.pdf
+https://arxiv.org/abs/1911.01464
+4. Developers make language-specific BERTs to outperform mBERT
+In November 2019, researchers at Facebook AI, Inria, and Sorbonne Université published a French monolingual model, with an improvement over mBERT and XLM on the XLNI test. They named it CamemBERT, after a French cheese.
+
+CamemBERT: a Tasty French Language Model
+Pretrained language models are now ubiquitous in Natural Language Processing. Despite their success, most available…
+arxiv.org
+This is part of an explosion of other language-specific BERTs (some have no match in XLNI, so they use other metrics)
+German BERT, from Deepset.AI, Germany (this predates and was footnoted by CamemBERT)
++ berts a newer release by Die Bayerische Staatsbibliothek, Germany
+Flaubert, French, from Getalp, France
+BETO, Spanish, from Universidad de Chile
+BERTje, Dutch, from Rijksuniversiteit Groningen, Netherlands
+FinBERT, Finnish, from Turun yliopisto, Finland
+AlBERTo, Italian, from Università degli Studi di Bari Aldo Moro, Italy
+(this predates CamemBERT, but was not as widely shared)
++ GilBERTo, Italy
++ UmBERTo, MusixMatch, Italy
+BERT-Japanese, from 東北大学, Japan
+Portuguese-BERT, from NeuralMind.ai, Brazil
+RuBERT, Russian, from Физтех, Russia
+(this predates CamemBERT, but was not as widely shared)
+If this Twitter thread is any indication, more are on the way.
+Updated March 2020: https://bertlang.unibocconi.it/ has Arabic, Mongolian, Turkish, and other languages
+There are alternatives such as the ELMo for Many Languages project from 哈尔滨工业大学, China. Search a list of language models here.
+In addition to details mentioned above, another reason that these models can outperform mBERT is that they can use Whole Word Masking (WWM), which improved English models in May 2019, but has yet to be available in the 100+ languages of mBERT.
+5. Language models are available in HuggingFace/Transformers
+It was difficult to compile the earlier list, because AI press is focused on large corporations, and there are few places highlighting the universities and startups which publish these models.
+One of the key places to share models is through addition to Transformers. This library simplifies the process of downloading and using 154 word embeddings in your code. That list includes all of the earlier mentioned models (except Flaubert, which is in a pull request, and RuBERT).
+6. Many languages are still under-represented
+Looking at the top world languages, there are no documented BERT for Arabic, Hindi-Urdu, Malay-Indonesian, Bengali, Punjabi, or Marathi. I hope that these can be created, shown to outperform mBERT on the XNLI (which includes Arabic, Hindi, and Urdu) or another metric, and published through Transformers library.
