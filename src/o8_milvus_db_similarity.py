@@ -9,6 +9,9 @@ host = '127.0.0.1'
 port = '19530'
 connections.add_connection(default={"host": host, "port": port})
 
+# start milvus DB
+# cd src && docker compose up -d
+
 def milvus_distance():
     connections.connect(alias='default')
 
@@ -45,34 +48,31 @@ def milvus_distance():
 
     cp_len = len(docs_vectors)
     collection.insert([[i for i in range(cp_len)], [float(i) for i in range(cp_len)], docs_vectors])
-
-    print(f"\nGet collection entities...")
-    print(collection.num_entities)
-
     default_index = {"index_type": "IVF_FLAT", "params": {"nlist": 512}, "metric_type": "L2"}
-    print(f"\nCreate index...")
     collection.create_index(field_name="float_vector", index_params=default_index)
-    print(f"\nload collection...")
-    collection.load()
+    # print(f"\nCollection entities: {collection.num_entities}")
 
     question = 'how many languages does bert understand?'
     question_embedding = embed([question])
     question_vector = np.array(question_embedding[0]).tolist()
-
+    
+    collection.load()
     topK = 3
     search_params = {"metric_type": "L2", "params": {"nprobe": 20}}
     print(f"\nSearching...")
     start_time = time.time()
-    res = collection.search([question_vector], "float_vector", search_params, topK, "count > 0")
+    result = collection.search([question_vector], "float_vector", search_params, topK, "count > 0")
     end_time = time.time()
-
-    for hits in res:
+    print("search time = %.4fs\n" % (end_time - start_time))
+  
+    for hits in result:
         for hit in hits:
             print(hit)
-    
-    print("search latency = %.4fs" % (end_time - start_time))
     
     collection.drop()
 
 
 milvus_distance()
+
+# stop milvus DB
+# cd src && docker compose down                               
