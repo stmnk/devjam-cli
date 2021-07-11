@@ -1,6 +1,4 @@
-import os 
 import numpy as np
-from rsa import verify
 import tensorflow_hub as hub
 from dotenv import load_dotenv   
 from elasticsearch import Elasticsearch, helpers

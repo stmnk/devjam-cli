@@ -74,7 +74,6 @@ if __name__ == '__main__':
         }
     }
 
-
     try:
         index_name = 'bert'
         if es_client.indices.exists(index_name):

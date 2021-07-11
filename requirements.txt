@@ -5,4 +5,4 @@ tensorflow
 elasticsearch
 python-dotenv
 tensorflow_hub
-elasticsearch-oss
+pymilvus-orm==2.0.0rc1
