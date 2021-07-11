@@ -5,7 +5,7 @@ from elasticsearch import Elasticsearch, helpers
 
 from o2_populate_corpus import corpus_docs
 
-load_dotenv()   
+load_dotenv()
 
 # docker pull amazon/opendistro-for-elasticsearch:1.13.2
 # docker run -p 9200:9200 -p 9600:9600 -e "discovery.type=single-node" amazon/opendistro-for-elasticsearch:1.13.2
@@ -35,7 +35,7 @@ if __name__ == '__main__':
     module_url = "https://tfhub.dev/google/universal-sentence-encoder/4"
     print('\nLoading Univ Sent Encoding from TFHub, this can take some time ...\n', '\n')
     model = hub.load(module_url)
-    print ('\n', f"Module {module_url} finished loading\n")
+    print('\n', f'Module {module_url} finished loading\n')
 
     def embed(text_input):
         return model(text_input)

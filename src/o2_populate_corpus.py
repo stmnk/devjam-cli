@@ -8,7 +8,7 @@ BONSAI_URL = os.environ.get('BONSAI_URL')
 client = Elasticsearch(BONSAI_URL)
 
 def corpus_docs(corpus_path):
-    for directory, _, filenames in os.walk(f'src/{corpus_path}'):
+    for directory, _, filenames in os.walk(f'{corpus_path}'):
         for filename in filenames:
             file_path = os.path.join(directory, filename)
             doc_name = filename.replace('.txt', '')

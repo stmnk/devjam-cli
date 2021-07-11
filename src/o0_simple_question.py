@@ -6,15 +6,15 @@ import requests
 BERT_URL = "https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&explaintext=1&titles=BERT_(language_model)"
 method = 'GET'
 
-if not os.path.isfile('corpus/wiki_bert.txt'): 
+if not os.path.isfile('./corpus/wiki_bert.txt'): 
     response = requests.request(method, BERT_URL)
     resp_json = json.loads(response.content.decode("utf-8"))
     wiki_bert = resp_json['query']['pages']['62026514']['extract']
-    file = open('corpus/wiki_bert.txt', 'w+')
+    file = open('./corpus/wiki_bert.txt', 'w+')
     file.write(wiki_bert)
     file.close()
 
-file = open('corpus/wiki_bert.txt', encoding='utf8')
+file = open('./corpus/wiki_bert.txt', encoding='utf8')
 passage = file.read()
 file.close()
 
@@ -50,7 +50,7 @@ method = 'POST'
 # file = open('corpus/medium_bert_2.txt', encoding='utf8')
 # {'score': 0.0018622897332534194, 'start': 436, 'end': 439, 'answer': '104'}
 
-file = open('corpus/arXiv_bert.txt', encoding='utf8')
+file = open('./corpus/arXiv_bert.txt', encoding='utf8')
 # {'score': 0.025512443855404854, 'start': 229, 'end': 232, 'answer': '104'}
 passage = file.read()
 file.close()

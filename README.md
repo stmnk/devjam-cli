@@ -7,6 +7,7 @@ python3 -m venv venv
 source venv/bin/activate
 # python3 -m pip install --upgrade pip
 pip install -r requirements.txt
-python 00_simple_question
+cd src
+python o0_simple_question.py
 ```
 
