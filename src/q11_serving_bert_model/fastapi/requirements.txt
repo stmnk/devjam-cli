@@ -1,0 +1,7 @@
+fastapi
+aiofiles
+jinja2
+python-multipart
+tensorflow
+bert-for-tf2
+numpy

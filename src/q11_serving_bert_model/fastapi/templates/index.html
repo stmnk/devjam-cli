@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>NLP</title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta content="nlp" name="keywords">
+  <meta content="nlp" name="description">
+  <link href="../static/css/style.css" rel="stylesheet">
+</head>
+
+<body id="body">
+  <form action="/prediction" method="post" id="predict">
+    <label for="passage">Passage</label>
+    <input type="text" name="passage" value="how many languages does roberta understand?" required />
+    <button type="submit">Predict</button>
+  </form>
+  <p>Prediction: {{ prediction }}</p>
+  <p>Passage: {{ passage }}</p>
+
+  <script src="../static/js/main.js"></script>
+</body>
+
+</html>

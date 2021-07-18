@@ -1,0 +1,20 @@
+question,intent
+how many languages does bert understand?,BertIntent
+how many brothers does bran have?,AsoiafIntent
+how many languages does Bert understand?,BertIntent
+how many brothers does arya have?,AsoiafIntent
+how many languages does BERT understand?,BertIntent
+how many brothers does sansa have?,AsoiafIntent
+how many languages does bert understand in 2019?,BertIntent
+how many brothers does John have?,AsoiafIntent
+how many languages does BERT understand in 2020?,BertIntent
+how many languages does bert comprehend?,BertIntent
+how many brothers does robert barateon have?,AsoiafIntent
+how many languages does Bert grasp?,BertIntent
+how many brothers does stanis have?,AsoiafIntent
+how many languages does BERT and Roberta understand?,BertIntent
+how many children do rebert and cercei have?,AsoiafIntent
+how many languages did bert understand back in 2019?,BertIntent
+how many brothers does rob stark have?,AsoiafIntent
+how many languages did BERT understand one year ago?,BertIntent
+what was the last time Dany has been on the mainland of Westeros not on an adiacent island?,AsoiafIntent

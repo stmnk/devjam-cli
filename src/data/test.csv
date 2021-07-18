@@ -1,0 +1,10 @@
+question,intent
+how many languages does roberta understand?,BertIntent
+how many sisters does bran have?,AsoiafIntent
+how many languages does ernie understand?,BertIntent
+how many brothers does theon have?,AsoiafIntent
+how many languages does bertije understand?,BertIntent
+how many dolls does sansa have?,AsoiafIntent
+how many languages does bert understand in 2021?,BertIntent
+how many brothers does cercei have?,AsoiafIntent
+how many dialect does BERT grasp in 2020?,BertIntent
