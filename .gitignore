@@ -5,3 +5,6 @@ src/.DS_Store
 src/images
 src/__pycache__
 src/wip.py
+.idea
+src/model/uncased_L-4_H-512_A-8/
+src/q11_serving_bert_model/fastapi/question_intent_recognition_model.h5
