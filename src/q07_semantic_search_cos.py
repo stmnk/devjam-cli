@@ -2,7 +2,7 @@ import numpy as np
 import tensorflow_hub as hub
 from dotenv import load_dotenv   
 
-from o6_enterprise_elastic import es_connection
+from q06_enterprise_elastic import es_connection
 
 load_dotenv()      
 

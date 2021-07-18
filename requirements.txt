@@ -1,7 +1,10 @@
+bert
+tqdm
 numpy
 sklearn
 requests
 tensorflow
+bert-for-tf2
 elasticsearch
 python-dotenv
 tensorflow_hub

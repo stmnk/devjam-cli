@@ -1,25 +1,21 @@
-import os 
 import numpy as np
 import tensorflow_hub as hub
 from dotenv import load_dotenv   
 from elasticsearch import Elasticsearch, helpers
 
-from o2_populate_corpus import corpus_docs
+from q02_populate_corpus import corpus_docs
 
-load_dotenv()       
+load_dotenv()
 
-# docker pull docker.elastic.co/elasticsearch/elasticsearch:7.13.3
-# docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.13.3          
-# export ELASTICSEARCH_LOCAL_ENTERPRISE=0.0.0.0:9200
+# docker pull amazon/opendistro-for-elasticsearch:1.13.2
+# docker run -p 9200:9200 -p 9600:9600 -e "discovery.type=single-node" amazon/opendistro-for-elasticsearch:1.13.2
+# export ELASTICSEARCH_LOCAL_OPEN_SOURCE=https://admin:admin@0.0.0.0:9200
+# curl -XGET https://localhost:9200 -u 'admin:admin' --insecure
 
-def es_connection(env_var):
-    # SEARCHLY_URL = os.environ.get('SEARCHLY_URL')
-    ELASTICSEARCH_LOCAL = os.environ.get(env_var) 
-    es_client = Elasticsearch(ELASTICSEARCH_LOCAL) # es_client = Elasticsearch(SEARCHLY_URL)    
-    return es_client
-
-
-es_client = es_connection('ELASTICSEARCH_LOCAL_ENTERPRISE')
+es_client = Elasticsearch(
+    hosts=[{"host": '0.0.0.0', 'port': 9200}], http_auth=('admin', 'admin'),
+    scheme='https', verify_certs=False,
+)
 
 def create_qa_index(index_name, index_mapping):
     try:
@@ -39,7 +35,7 @@ if __name__ == '__main__':
     module_url = "https://tfhub.dev/google/universal-sentence-encoder/4"
     print('\nLoading Univ Sent Encoding from TFHub, this can take some time ...\n', '\n')
     model = hub.load(module_url)
-    print ('\n', f"Module {module_url} finished loading\n")
+    print('\n', f'Module {module_url} finished loading\n')
 
     def embed(text_input):
         return model(text_input)
@@ -57,6 +53,9 @@ if __name__ == '__main__':
     # print(vectorized_corpus)
 
     index_mapping = {
+        "settings": {
+            "index.knn": 'true'
+        },
         "mappings": {
             "properties": {
                 "name": {
@@ -65,11 +64,11 @@ if __name__ == '__main__':
                 "text": {
                     "type": "text"
                 },
-                # available in the enterprise ES version 
+                # available in the community ES, OSS version (with a plugin; not default in searchly)
                 "vector": {
-                    "type": "dense_vector", 
-                    "dims": 512
-                }
+                    "type": "knn_vector",
+                    "dimension": 512
+                },
             }
         }
     }
@@ -80,6 +79,7 @@ if __name__ == '__main__':
             es_client.indices.delete(index=index_name)
 
         create_qa_index(index_name, index_mapping)
+        es_client.indices.refresh(index_name)
         print ("Populating the corpus ...")
         resp = helpers.bulk(es_client, 
             vectorized_corpus,
@@ -88,3 +88,4 @@ if __name__ == '__main__':
         print ("Elasticsearch SUCCESS:", resp)
     except Exception as err:
         print("Elasticsearch ERROR:", err)
+

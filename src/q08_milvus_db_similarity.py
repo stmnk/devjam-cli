@@ -3,14 +3,14 @@ import numpy as np
 import tensorflow_hub as hub
 from pymilvus_orm import connections, schema, DataType, Collection, list_collections
 
-from o2_populate_corpus import corpus_docs
+from q02_populate_corpus import corpus_docs
 
 host = '127.0.0.1'
 port = '19530'
 connections.add_connection(default={"host": host, "port": port})
 
 # start milvus DB
-# cd src && docker compose up -d
+# cd src/milvus && docker compose up -d
 
 def milvus_distance():
     connections.connect(alias='default')
@@ -75,4 +75,4 @@ def milvus_distance():
 milvus_distance()
 
 # stop milvus DB
-# cd src && docker compose down                               
+# cd src/milvus && docker compose down                               
