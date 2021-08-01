@@ -18,3 +18,83 @@ how many languages did bert understand back in 2019?,BertIntent
 how many brothers does rob stark have?,AsoiafIntent
 how many languages did BERT understand one year ago?,BertIntent
 what was the last time Dany has been on the mainland of Westeros not on an adiacent island?,AsoiafIntent
+What is the name of the machine learning technique for natural language processing?,BertIntent
+Who created and published BERT?,BertIntent
+What technology has Google been leveraging to better understand user searches?,BertIntent
+How many bidirectional self-attention heads does the BERTBASE have?,BertIntent
+What did BERT achieve when it was published?,BertIntent
+What is a multilayer perceptron?,BertIntent
+How many layers of nodes does an MLP consist of?,BertIntent
+What is the name of the neuron that uses a nonlinear activation function?,BertIntent
+What does MLP use for training?,BertIntent
+What distinguishes MLP from a linear perceptron?,BertIntent
+What is a linear activation function in a multilayer perceptron?,BertIntent
+What were Artificial neural networks inspired by?,BertIntent
+How is an autoencoder validated and refined?,BertIntent
+What are regularized autoencoders?,BertIntent
+How are autoencoders applied to many problems?,BertIntent
+What is the main part of an autoencoder?,BertIntent
+What is a decoder that maps the code to a reconstruction of the input?,BertIntent
+What does an autoencoder typically do for a set of data?,BertIntent
+What is a deep learning model that adopts the mechanism of attention?,BertIntent
+What is NLP?,BertIntent
+What are RNNs?,BertIntent
+What provides context for any position in the input sequence?,BertIntent
+What does a transformer identify to confer meaning to each word in the sentence?,BertIntent
+What is the model of choice for NLP problems?,BertIntent
+What is the discipline that concerns the collection organization analysis interpretation and presentation of data?,BertIntent
+What type of population is used in applying statistics to a scientific industrial or social problem?,BertIntent
+How do statisticians collect data when census data cannot be collected?,BertIntent
+What assures that inferences and conclusions can reasonably extend from the sample to the population as a whole?,BertIntent
+What does an experimental study involve?,BertIntent
+What is the problem of identifying which of a set of categories (sub-populations) an observation belongs to?,BertIntent
+What are quantifiable properties known as?,BertIntent
+What are explanatory variables or features?,BertIntent
+How do classifiers work?,BertIntent
+What is an algorithm that implements classification?,BertIntent
+What is the entropy of a random variable?,BertIntent
+Who introduced the concept of information entropy?,BertIntent
+What is the maximum surprise for when there is no reason to expect one outcome over another?,BertIntent
+What is an iterative method for optimizing an objective function with suitable smoothness properties?,BertIntent
+What does stochastic gradient descent achieve in high-dimensional optimization problems?,BertIntent
+What algorithm used stochastic gradient descent in the 1950s?,BertIntent
+Backpropagation is a widely used algorithm for training what?,BertIntent
+What does backpropagation do?,BertIntent
+How does the backpropagation algorithm compute the gradient of the loss function with respect to each weight?,BertIntent
+What is the name of the political entity that covers Westeros?,AsoiafIntent
+What are the closest foreign nations to Westeros?,AsoiafIntent
+What is to the south of Westeros?,AsoiafIntent
+Where does the continent of Westeros extend to the lands beyond the Wall?,AsoiafIntent
+What is the name of the land in the far north of Westeros?,AsoiafIntent
+Westeros is similar in size to what continent?,AsoiafIntent
+Who was the first Lord of the Seven Kingdoms and king on the Iron Throne?,AsoiafIntent
+What dynasty was Aegon I Targaryen the founder of?,AsoiafIntent
+What was Aegon's personality?,AsoiafIntent
+What sword did Aegon wear during his Conquest?,AsoiafIntent
+What was Aegon's crown set with?,AsoiafIntent
+Who was Aegon's only friend?,AsoiafIntent
+What was Aegon I Targaryen's attitude?,AsoiafIntent
+When was Varamyr injured?,AsoiafIntent
+What is Varamyr's perspective?,AsoiafIntent
+What is Varamyr's mission?,AsoiafIntent
+Where does Varamyr Sixskins return to after the kill?,AsoiafIntent
+Who is Varamyr Sixskins?,AsoiafIntent
+Where was Varamyr Sixskins defeated?,AsoiafIntent
+What did Varamyr lose when his eagle was killed?,AsoiafIntent
+What happened to Varamyr after his eagle was killed?,AsoiafIntent
+What is the name of Varamyr's companion?,AsoiafIntent
+What was Varamyr's nickname?,AsoiafIntent
+What happened to Varamyr as a youth?,AsoiafIntent
+What was Varamyr's father's dog?,AsoiafIntent
+What is the dominant religion in most of the Seven Kingdoms?,AsoiafIntent
+Where are followers of the Faith rare?,AsoiafIntent
+What are the gods of the Faith sometimes known as?,AsoiafIntent
+What are members of the Faith worshiping?,AsoiafIntent
+Why is the concept of the Seven Who Are One often difficult to understand?",AsoiafIntent
+What do worshippers pray to depending on their need?,AsoiafIntent
+What are the male and female godsworn of the Faith called?,AsoiafIntent
+What do Septons often wear?,AsoiafIntent
+What is the name of the sea deity worshipped by the ironborn of the Iron Islands?,AsoiafIntent
+What is the faith of the Drowned God to the Iron Islands?,AsoiafIntent
+What is the Drowned God said to have made the ironborn in his own likeness?,AsoiafIntent
+Who opposes the Drowned God?,AsoiafIntent

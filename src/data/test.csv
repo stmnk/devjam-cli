@@ -1,10 +1,17 @@
 question,intent
 how many languages does roberta understand?,BertIntent
+What do the men and female gods of the Faith do Upon taking their vows?,AsoiafIntent
 how many sisters does bran have?,AsoiafIntent
+What is Stochastic gradient descent regarded as?,BertIntent
 how many languages does ernie understand?,BertIntent
 how many brothers does theon have?,AsoiafIntent
+What dragon was Aegon riding during the conquest?,AsoiafIntent
 how many languages does bertije understand?,BertIntent
 how many dolls does sansa have?,AsoiafIntent
+What is the minimum surprise for a coin flip?,BertIntent
 how many languages does bert understand in 2021?,BertIntent
+Who was Varamyr's little brother?,AsoiafIntent
 how many brothers does cercei have?,AsoiafIntent
 how many dialect does BERT grasp in 2020?,BertIntent
+What does backpropagation use for training multilayer networks?,BertIntent
+How long does the continent of Westeros stretch?,AsoiafIntent
