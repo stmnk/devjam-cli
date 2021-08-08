@@ -1,10 +1,29 @@
+# editor configs
+.idea
+
+# compilation artifacts
+src/__pycache__
+
+# secrets; API keys
 .env
+
+# virtual environment; packages
 venv
+
+# mac env artifacts
 src/.DS_Store
 .DS_Store
+
+# blog images
 src/images
-src/__pycache__
+
+# wip files
 src/wip.py
-.idea
+
+# question-answering datasets
+squad_2/
+coqa/
+
+# training artifacts; large ML model files 
 src/model/uncased_L-4_H-512_A-8/
 src/q11_serving_bert_model/fastapi/question_intent_recognition_model.h5
