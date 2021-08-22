@@ -1,7 +1,9 @@
 # editor configs
 .idea
+.vscode
 
-# compilation artifacts
+# python compilation artifacts
+__pycache__
 src/__pycache__
 
 # secrets; API keys
@@ -19,6 +21,7 @@ src/images
 
 # wip files
 src/wip.py
+src/q15_pre_training_bert.py
 
 # question-answering datasets
 squad_2/
@@ -27,3 +30,11 @@ coqa/
 # training artifacts; large ML model files 
 src/model/uncased_L-4_H-512_A-8/
 src/q11_serving_bert_model/fastapi/question_intent_recognition_model.h5
+src/qa_weights.h5
+
+# stubs and typing
+src/stubs/
+stubs_config.cfg
+.mypy_cache/
+.pytype/
+

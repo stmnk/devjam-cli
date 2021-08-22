@@ -1,9 +1,12 @@
 bert
 tqdm
+mypy
 numpy
+pytype
 sklearn
 requests
 tensorflow
+tokenizers
 bert-for-tf2
 elasticsearch
 python-dotenv
